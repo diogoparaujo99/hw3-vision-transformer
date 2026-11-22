@@ -8,3 +8,4 @@ __pycache__/
 /transformer_captioning/datasets/coco_captioning/
 /vit_classification/data/
 /vit_classification/checkpoints/
+.DS_Store
