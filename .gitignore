@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pt
+*.pth
+*.zip
+*.aux
+*.log
+/transformer_captioning/datasets/coco_captioning/
+/vit_classification/data/
+/vit_classification/checkpoints/

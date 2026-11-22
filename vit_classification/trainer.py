@@ -50,7 +50,7 @@ class Trainer:
 
         
         # TODO - Compute cross entropy loss between predictions and labels. 
-        loss = None
+        loss = torch.nn.functional.cross_entropy(predictions, labels)
         
 
         return loss
@@ -91,6 +91,6 @@ class Trainer:
                 print( "Train accuracy: %f" % (train_accuracy))
             
             if i % self.save_every == 0:
-                if not os.path.exists('checkpoints'):
-                    os.mkdir('checkpoints')
-                torch.save(self.model.state_dict(), 'checkpoints/model_{}.pth'.format(i))
+                checkpoint_dir = os.environ.get('VLR_CHECKPOINT_DIR', 'checkpoints')
+                os.makedirs(checkpoint_dir, exist_ok=True)
+                torch.save(self.model.state_dict(), os.path.join(checkpoint_dir, 'model_{}.pth'.format(i)))

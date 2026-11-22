@@ -24,8 +24,11 @@ class Trainer(object):
         #TODO - Compute cross entropy loss between predictions and labels. 
         #Make sure to compute this loss only for indices where label is not the null token.
         #The loss should be averaged over batch and sequence dimensions. 
-        return loss
+        return torch.nn.functional.cross_entropy(
+            predictions.transpose(1, 2), labels, ignore_index=self.model._null
+        )
     
+    @torch.no_grad()
     def val(self):
         """
         Run validation to compute loss and BLEU-4 score.
@@ -66,4 +69,5 @@ class Trainer(object):
             self.loss_history.append(epoch_loss/num_batches)
             if self.verbose and (i +1) % self.print_every == 0:
                 self.val_loss_history.append(self.val())
-                print( "(epoch %d / %d) loss: %f" % (i+1 , self.num_epochs, self.loss_history[-1]))    
+                print("(epoch %d / %d) loss: %.6f, val loss: %.6f" %
+                      (i + 1, self.num_epochs, self.loss_history[-1], self.val_loss_history[-1]))

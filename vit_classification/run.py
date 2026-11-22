@@ -1,5 +1,7 @@
 
 
+import os
+import torch
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -8,10 +10,12 @@ from vit import ViT
 from matplotlib import pyplot as plt
 
 # load cifar10 training data from torchvision
-train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms.ToTensor())
+torch.manual_seed(42)
+data_root = os.environ.get('VLR_CIFAR_ROOT', './data')
+train_dataset = torchvision.datasets.CIFAR10(root=data_root, train=True, download=True, transform=transforms.ToTensor())
 train_dataloader =  DataLoader(train_dataset, batch_size=64, shuffle=True)
 
-test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transforms.ToTensor())
+test_dataset = torchvision.datasets.CIFAR10(root=data_root, train=False, download=True, transform=transforms.ToTensor())
 test_dataloader =  DataLoader(test_dataset, batch_size=64, shuffle=True)
 
 device = 'cuda'

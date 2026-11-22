@@ -10,7 +10,7 @@ from PIL import Image
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-BASE_DIR = os.path.join(dir_path, "datasets/coco_captioning")
+BASE_DIR = os.environ.get("VLR_COCO_ROOT", os.path.join(dir_path, "datasets/coco_captioning"))
 
 def set_all_seeds(seed):
   random.seed(seed)
@@ -106,7 +106,7 @@ class CocoDataset(Dataset):
         captions = self.data["%s_captions" % split][idx]
         image_idxs = self.data["%s_image_idxs" % split][idx]
         image_features = self.data["%s_features" % split][image_idxs]
-        return image_features, captions.astype(np.long), image_idxs
+        return image_features, captions.astype(np.int64), image_idxs
 
 def image_from_url(url):
     """
@@ -114,8 +114,9 @@ def image_from_url(url):
     We write the image to a temporary file then read it back. Kinda gross.
     """
     try:
-        f = urllib.request.urlopen(url)
-        _, fname = tempfile.mkstemp()
+        f = urllib.request.urlopen(url.replace("http://", "https://", 1), timeout=8)
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
         with open(fname, "wb") as ff:
             ff.write(f.read())
         img = imread(fname)

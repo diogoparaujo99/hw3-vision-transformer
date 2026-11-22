@@ -54,10 +54,10 @@ class ViT(nn.Module):
         self.num_classes = num_classes
         self.device = device
 
-        self.patch_embedding = None # TODO (Linear Layer that takes as input a patch and outputs a d_model dimensional vector)
-        self.positional_encoding = None # TODO (use the positional encoding from the transformer captioning solution)
-        self.fc = None # TODO (takes as input the embedding corresponding to the [CLS] token and outputs the logits for each class)
-        self.cls_token = None # TODO (learnable [CLS] token embedding)
+        self.patch_embedding = nn.Linear(3 * patch_dim ** 2, d_model)
+        self.positional_encoding = PositionalEncoding(d_model, max_len=num_patches + 1)
+        self.fc = nn.Linear(d_model, num_classes)
+        self.cls_token = nn.Parameter(torch.empty(1, 1, d_model).normal_(std=0.02))
 
         self.layers = nn.ModuleList([EncoderLayer(d_model, num_heads, d_ff) for _ in range(num_layers)])
 
@@ -74,7 +74,9 @@ class ViT(nn.Module):
                 - patches: a FloatTensor of shape (N, num_patches, patch_dim x patch_dim x 3) giving a minibatch of patches    
         """
 
-        patches = None # TODO - Break images into a grid of patches
+        p = self.patch_dim
+        patches = images.unfold(2, p, p).unfold(3, p, p)
+        patches = patches.permute(0, 2, 3, 1, 4, 5).reshape(images.size(0), -1, 3 * p ** 2)
         # Feel free to use pytorch built-in functions to do this
         
         return patches
@@ -91,14 +93,15 @@ class ViT(nn.Module):
         patches = self.patchify(images)
         patches_embedded = self.patch_embedding(patches)
         
-        output = None # TODO (append a CLS token to the beginning of the sequence of patch embeddings, followed by positional encoding)
+        cls = self.cls_token.expand(images.size(0), -1, -1)
+        output = self.positional_encoding(torch.cat((cls, patches_embedded), dim=1))
 
-        mask = None # TODO (generate a mask and feed it to the self-attention layer in ViT)
+        mask = None
 
         for layer in self.layers:
             output = layer(output, mask)
 
-        output = None # TODO (take the embedding corresponding to the [CLS] token and feed it through a linear layer to obtain the logits for each class)
+        output = self.fc(output[:, 0])
 
         return output
 
@@ -106,7 +109,7 @@ class ViT(nn.Module):
         """
         Initialize the weights of the network.
         """
-        if isinstance(module, (nn.Linear, nn.Embedding)):
+        if isinstance(module, (nn.Linear, nn.Embedding)) and module.weight.requires_grad:
             module.weight.data.normal_(mean=0.0, std=0.02)
             if isinstance(module, nn.Linear) and module.bias is not None:
                 module.bias.data.zero_()
