@@ -217,8 +217,7 @@ class TransformerDecoder(nn.Module):
         # TODO - get caption and feature embeddings 
         # Don't forget position embeddings for captions!
         # expected caption embedding output shape : (N, T, D)
-        scale = math.sqrt(self.caption_embedding.embedding_dim)
-        caption_embedding = self.positional_encoding(self.caption_embedding(captions) * scale)
+        caption_embedding = self.positional_encoding(self.caption_embedding(captions))
 
         # Unsqueeze feature embedding along dimension 1
         # expected feature embedding output shape : (N, 1, D) 
@@ -254,7 +253,7 @@ class TransformerDecoder(nn.Module):
         return scores
 
     def _init_weights(self, module):
-        if isinstance(module, (nn.Linear, nn.Embedding)) and module.weight.requires_grad:
+        if isinstance(module, (nn.Linear, nn.Embedding)):
             module.weight.data.normal_(mean=0.0, std=0.02)
             if isinstance(module, nn.Linear) and module.bias is not None:
                 module.bias.data.zero_()

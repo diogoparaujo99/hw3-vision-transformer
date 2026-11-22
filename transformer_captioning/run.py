@@ -1,5 +1,6 @@
 
 import argparse
+import os
 
 import torch
 from utils import * 
@@ -8,6 +9,8 @@ from trainer import Trainer
 from transformer import SwiGLU, TransformerDecoder
 from matplotlib import pyplot as plt
 
+os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
+torch.use_deterministic_algorithms(True)
 set_all_seeds(42) ### DO NOT CHANGE THIS LINE
 configs = {
     'case1': (2, 2, 1e-4),
@@ -59,14 +62,23 @@ trainer = Trainer(transformer, train_dataloader, val_dataloader,
 
 trainer.train()
 print(f'Final training loss: {trainer.loss_history[-1]:.6f}')
-print(f'Minimum training loss: {min(trainer.loss_history):.6f}')
+minimum_loss = min(trainer.loss_history)
+min_epoch = trainer.loss_history.index(minimum_loss) + 1
+print(f'Minimum training loss: {minimum_loss:.6f} (epoch {min_epoch})')
 
 # Plot the training losses.
-plt.plot(range(1, len(trainer.loss_history) + 1), trainer.loss_history)
+epochs = range(1, len(trainer.loss_history) + 1)
+plt.plot(epochs, trainer.loss_history)
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 os.makedirs('plots', exist_ok=True)
 plt.title('Training loss history')
+if exp_name == 'case3' and len(epochs) >= 40:
+    zoom = plt.gca().inset_axes([0.40, 0.47, 0.55, 0.43])
+    zoom.plot(epochs[39:], trainer.loss_history[39:])
+    zoom.set_title(f'Epochs 40–{epochs[-1]}', fontsize=10)
+    zoom.set_xticks([40, (40 + epochs[-1]) // 2, epochs[-1]])
+    zoom.tick_params(labelsize=9)
 plt.savefig('plots/' + exp_name + '_loss_out.png')
 plt.close()
 

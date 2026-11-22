@@ -25,7 +25,8 @@ class Trainer(object):
         #Make sure to compute this loss only for indices where label is not the null token.
         #The loss should be averaged over batch and sequence dimensions. 
         return torch.nn.functional.cross_entropy(
-            predictions.transpose(1, 2), labels, ignore_index=self.model._null
+            predictions.reshape(-1, predictions.size(-1)), labels.reshape(-1),
+            ignore_index=self.model._null
         )
     
     @torch.no_grad()

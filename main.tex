@@ -300,22 +300,23 @@ We will be implementing the different pieces of a Transformer decoder (\href{htt
 \begin{questions}
 \question Paste training loss plots for each of the three hyper-param configs
 \\
-2-heads-2-layers-lr-1e-4: \textbf{0.7820} \\
-4-heads-6-layers-lr-1e-4: \textbf{0.3127} (0.3116 minimum) \\
-4-heads-6-layers-lr-1e-3: \textbf{0.1644} (0.0338 minimum)
+At \(10^{-4}\), the two-layer model reached \textbf{0.6642} and the six-layer
+model reached \textbf{0.2369}. Both losses were lowest at epoch 100.
+At \(10^{-3}\), the six-layer model reached its minimum of \textbf{0.0372}
+at epoch 93 and finished at \textbf{0.0596}. Its minimum meets the 0.05 target.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.32\linewidth}
         \includegraphics[width=\linewidth]{transformer_captioning/plots/case1_loss_out.png}
-        \caption{2-heads-2-layers-lre-4}
+        \caption{2 heads, 2 layers, \(10^{-4}\)}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\linewidth}
         \includegraphics[width=\linewidth]{transformer_captioning/plots/case2_loss_out.png}
-        \caption{4-heads-6-layers-lre-4}
+        \caption{4 heads, 6 layers, \(10^{-4}\)}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\linewidth}
         \includegraphics[width=\linewidth]{transformer_captioning/plots/case3_loss_out.png}
-        \caption{4-heads-6-layers-lre-3}
+        \caption{4 heads, 6 layers, \(10^{-3}\)}
     \end{subfigure}
     
 \end{figure}
@@ -344,9 +345,9 @@ We will be implementing the different pieces of a Transformer decoder (\href{htt
 All three models overfit. At \(10^{-4}\), validation loss was lowest at epoch 30 for the
 two-head, two-layer model and at epoch 20 for the four-head, six-layer model.
 At epoch 100 the larger model had lower training loss
-(0.31 vs.\ 0.78) but higher validation loss (4.92 vs.\ 4.57). Raising its
+(0.24 vs.\ 0.66) but higher validation loss (4.92 vs.\ 4.67). Raising its
 learning rate to \(10^{-3}\) widened the gap. From epoch 10 to 100, training
-loss fell from 1.57 to 0.16 while validation loss rose from 3.87 to 6.40.
+loss fell from 1.34 to 0.06 while validation loss rose from 3.99 to 6.47.
 
 I would train the two-layer model on more COCO pairs and vary image brightness
 where the caption still fits. I would monitor validation loss each epoch and
@@ -377,10 +378,10 @@ I tested SwiGLU in the four-head, six-layer decoder at \(10^{-4}\), with about
 as many parameters as the ReLU model. Both used next-token cross-entropy. It
 penalizes low probabilities for the correct next word and ignores padding.
 
-Both models reached their lowest recorded validation loss at epoch 20 (3.744
-for ReLU and 3.745 for SwiGLU). Training loss kept falling after that, while
+Both models reached their lowest recorded validation loss at epoch 20 (3.771
+for ReLU and 3.789 for SwiGLU). Training loss kept falling after that, while
 validation loss rose. By epoch 100, SwiGLU fit the training captions more closely
-than ReLU (loss of 0.192 vs.\ 0.313), yet did worse on unseen captions (5.30
+than ReLU (loss of 0.126 vs.\ 0.237), yet did worse on unseen captions (5.38
 vs.\ 4.92). Both models overfit, especially SwiGLU, so I would use the
 epoch-20 checkpoint for either model.
 \end{solution}
