@@ -94,7 +94,8 @@ class ViT(nn.Module):
         patches_embedded = self.patch_embedding(patches)
         
         cls = self.cls_token.expand(images.size(0), -1, -1)
-        output = self.positional_encoding(torch.cat((cls, patches_embedded), dim=1))
+        tokens = torch.cat((cls, patches_embedded), dim=1)
+        output = self.positional_encoding(tokens * self.d_model ** 0.5)
 
         mask = None
 
