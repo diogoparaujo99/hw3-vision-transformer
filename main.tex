@@ -421,18 +421,6 @@ Train Accuracy: \textbf{99.97\%}
 
 Training Loss: \textbf{0.0869}
 
-I trained the four-layer ViT for 100 epochs in both runs. In the first run,
-the position vectors were about five times larger than the patch embeddings
-at initialization (root mean square of 0.71 vs.\ 0.14). I multiplied the
-patch and class embeddings by 16 before adding position, keeping the same
-seed and learning-rate schedule. Training loss fell from 0.3015 to 0.0869,
-and test accuracy rose from 63.79\% to 67.45\%.
-
-The accuracy plot shows that the model continued to improve on the training
-images after test accuracy had largely leveled off. By epoch 100 it classified
-almost every training image correctly, but only about two thirds of the test
-images. The drops in training accuracy and rises in loss recur every ten
-epochs when the learning rate restarts.
 \end{solution}
 
 \clearpage
@@ -442,7 +430,6 @@ epochs when the learning rate restarts.
 \begin{enumerate}
     \item Did you receive any help whatsoever from anyone in solving this assignment?
     \begin{checkboxes}
-     \choice Yes
      \choice No
     \end{checkboxes}
     \begin{itemize}
@@ -456,7 +443,6 @@ epochs when the learning rate restarts.
 
     \item Did you give any help whatsoever to anyone in solving this assignment?
     \begin{checkboxes}
-     \choice Yes
      \choice No\
     \end{checkboxes}
     \begin{itemize}
