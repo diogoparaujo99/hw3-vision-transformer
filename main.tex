@@ -299,11 +299,11 @@ We will be implementing the different pieces of a Transformer decoder (\href{htt
 
 \begin{questions}
 \question Paste training loss plots for each of the three hyper-param configs
-\\
-At \(10^{-4}\), the two-layer model reached \textbf{0.6642} and the six-layer
-model reached \textbf{0.2369}. Both losses were lowest at epoch 100.
-At \(10^{-3}\), the six-layer model reached its minimum of \textbf{0.0372}
-at epoch 93 and finished at \textbf{0.0596}. Its minimum meets the 0.05 target.
+\begin{itemize}[nosep]
+    \item 2 heads, 2 layers, LR \(10^{-4}\) — final and minimum \textbf{0.6642} (epoch 100).
+    \item 4 heads, 6 layers, LR \(10^{-4}\) — final and minimum \textbf{0.2369} (epoch 100).
+    \item 4 heads, 6 layers, LR \(10^{-3}\) — final \textbf{0.0596}, minimum \textbf{0.0372} (epoch 93).
+\end{itemize}
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.32\linewidth}

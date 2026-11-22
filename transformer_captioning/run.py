@@ -73,12 +73,6 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 os.makedirs('plots', exist_ok=True)
 plt.title('Training loss history')
-if exp_name == 'case3' and len(epochs) >= 40:
-    zoom = plt.gca().inset_axes([0.40, 0.47, 0.55, 0.43])
-    zoom.plot(epochs[39:], trainer.loss_history[39:])
-    zoom.set_title(f'Epochs 40–{epochs[-1]}', fontsize=10)
-    zoom.set_xticks([40, (40 + epochs[-1]) // 2, epochs[-1]])
-    zoom.tick_params(labelsize=9)
 plt.savefig('plots/' + exp_name + '_loss_out.png')
 plt.close()
 
